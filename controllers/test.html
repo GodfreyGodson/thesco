@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Download Notes</title>
+</head>
+
+<body>
+    <h1>Download Notes</h1>
+    <button onclick="downloadNotes()">Download</button>
+    <script>
+        function downloadNotes() {
+            const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NDIyOGIyN2Q0NjUwNzg4MTM0NWM0YTUiLCJpYXQiOjE2ODA3MTk5MzUsImV4cCI6MTY4MDcyMjYzNX0.GH10u_A0p5dkFbaTXZzsTdK2SNh_AJPDZwO3jbcD218'; // replace with your actual auth token
+            const headers = new Headers();
+            headers.append('Authorization', `Bearer ${token}`);
+            const request = new Request('http://localhost:3000/api/courses/642b294f93d866643bc3e1dd/notes', { headers: headers });
+            fetch(request)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    response.blob().then(blob => {
+                        const url = window.URL.createObjectURL(blob);
+                        const a = document.createElement('a');
+                        a.style.display = 'none';
+                        a.href = url;
+                        a.download = 'notes.pdf';
+                        document.body.appendChild(a);
+                        a.click();
+                        window.URL.revokeObjectURL(url);
+                    });
+                })
+                .catch(error => {
+                    console.error(error);
+                });
+        }
+    </script>
+</body>
+
+</html>
